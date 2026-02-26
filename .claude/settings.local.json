@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node -e \"const p = require\\(''./node_modules/next/package.json''\\); console.log\\(''next version:'', p.version\\)\")"
+      "Bash(node -e \"const p = require\\(''./node_modules/next/package.json''\\); console.log\\(''next version:'', p.version\\)\")",
+      "Bash(npm install @neondatabase/serverless)"
     ]
   }
 }
