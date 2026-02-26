@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -8,10 +9,13 @@ import {
   LogOut,
   Sparkles,
   X,
+  Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PublicUser } from '@/types';
 import { toast } from 'sonner';
+import UpgradeModal from '@/components/payment/UpgradeModal';
+import { useSidebar } from '@/components/layout/SidebarContext';
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -27,6 +31,8 @@ interface SidebarProps {
 export function Sidebar({ user, mobileOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { refreshUser } = useSidebar();
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
   async function handleLogout() {
     try {
@@ -39,6 +45,17 @@ export function Sidebar({ user, mobileOpen, onClose }: SidebarProps) {
 
   return (
     <>
+      {showUpgrade && user && (
+        <UpgradeModal
+          userName={user.name}
+          userEmail={user.email}
+          onClose={() => setShowUpgrade(false)}
+          onSuccess={() => {
+            setShowUpgrade(false);
+            refreshUser();
+          }}
+        />
+      )}
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
@@ -126,6 +143,15 @@ export function Sidebar({ user, mobileOpen, onClose }: SidebarProps) {
                   </span>
                 )}
               </div>
+              {user.plan === 'free' && (
+                <button
+                  onClick={() => setShowUpgrade(true)}
+                  className="mt-2.5 w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors text-xs font-medium text-white"
+                >
+                  <Zap className="w-3 h-3" />
+                  Upgrade to Pro — ₹499
+                </button>
+              )}
             </div>
           )}
           <button
